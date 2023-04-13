@@ -21,11 +21,8 @@ public class UserDaoHibernateImpl extends Util implements UserDao {
             Transaction transaction = session.beginTransaction();
 
             try {
-                SQLQuery query = session.createSQLQuery("SHOW TABLES LIKE 'users'");
-                if (query.list().isEmpty()) {
-                    query = session.createSQLQuery("CREATE TABLE users (id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), lastName VARCHAR(255), age TINYINT)");
-                    query.executeUpdate();
-                }
+                SQLQuery query = session.createSQLQuery("CREATE TABLE IF NOT EXISTS users (id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), lastName VARCHAR(255), age TINYINT)");
+                query.executeUpdate();
                 transaction.commit();
 
             } catch (Exception e) {
@@ -101,7 +98,7 @@ public class UserDaoHibernateImpl extends Util implements UserDao {
 
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            Query query = session.createQuery("DELETE FROM User");
+            Query query = session.createSQLQuery("TRUNCATE TABLE users");
             query.executeUpdate();
             transaction.commit();
         }
